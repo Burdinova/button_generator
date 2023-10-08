@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>генератор</title>
+    <style>
+        body {
+            font-family: "Calibri";
+        }
+
+        h2,
+        h3 {
+            text-transform: uppercase;
+        }
+
+        h3 {
+            margin-top: -10px;
+            margin-right: -10px;
+            margin-left: -10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: rgb(53, 109, 173);
+            color: white;
+        }
+
+        form {
+            padding: 10px;
+            width: 320px;
+            display: inline-flex;
+            flex-direction: column;
+        }
+
+        #result {
+            width: 100px;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            resize: none;
+            height: 50px;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed gray;
+        }
+
+        #backgroundColor {
+            width: 40px;
+            height: 40px;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #color {
+            width: 40px;
+            height: 40px;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #opacity {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Генератор стиля кнопки</h2>
+
+    <form>
+        <h3>Настройки</h3>
+
+        <label for="radius">Скругление</label>
+        <input type="range" id="radius" min="0" max="20" step="1" value="10">
+
+        <label for="borderStyle">Тип границы</label>
+        <select id="borderStyle">
+            <option value="none">None</option>
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="double">Double</option>
+        </select>
+
+        <label for="color">Цвет кнопки</label>
+        <input type="color" id="backgroundColor" value="#0000FF">
+
+        <label for="color">Цвет текста</label>
+        <input type="color" id="color">
+
+        <label for="opacity">Прозрачность</label>
+        <input type="range" id="opacity" min="0" max="1" step="0.01" value="0.5">
+
+        <h3>Результат</h3>
+        <!-- <div  type="button" id="result">Кнопка</div> -->
+        <!-- <input type="button" id="result" value="Кнопка"> -->
+        <button id="result">Стиль кнопки</button>
+        <!-- ниже только для чтения -->
+        <textarea id="cssCode" readonly></textarea>
+    </form>
+
+
+    <script>
+
+        function generateCss() {
+
+
+            let backgroundColor = document.getElementById('backgroundColor').value
+            let color = document.getElementById('color').value
+            let radius = document.getElementById('radius').value
+            let borderStyle = document.getElementById('borderStyle').value
+            // переводим из 16-ричной в 10-ную систему счисления
+            let backgroundRed = parseInt(backgroundColor.slice(1, 3), 16)
+            let backgroundGreen = parseInt(backgroundColor.slice(3, 5), 16)
+            let backgroundBlue = parseInt(backgroundColor.slice(5, 7), 16)
+
+            let textRed = parseInt(color.slice(1, 3), 16)
+            let textGreen = parseInt(color.slice(3, 5), 16)
+            let textBlue = parseInt(color.slice(5, 7), 16)
+
+            let opacity = document.getElementById('opacity').value
+
+            let result = document.getElementById('result')
+            let textarea = document.getElementById('cssCode')
+
+            let str = `rgba(${backgroundRed}, ${backgroundGreen}, ${backgroundBlue}, ${opacity})`
+            let textStr = `rgba(${textRed}, ${textGreen}, ${textBlue})`
+            let radiusStr = `${radius}px`
+
+            textarea.value = 'background-color: ' + str + ';' + '\ncolor: ' + textStr + ';' + '\nborder-radius: ' + radiusStr + ';' + '\nborder-style: ' + borderStyle + ';'
+            result.style.backgroundColor = str
+            result.style.color = textStr
+            result.style.borderRadius = radiusStr
+            result.style.borderStyle = borderStyle
+
+        }
+
+        // для любого изменения input сразу будет применяться
+        for (let item of document.querySelectorAll('input')) {
+            item.addEventListener('input', generateCss)
+        }
+        for (let item of document.querySelectorAll('select')) {
+            item.addEventListener('change', generateCss)
+        }
+
+        generateCss()
+    </script>
+</body>
+
+</html>
